@@ -24,6 +24,13 @@
           <button id="start" onclick="onStart()">Start</button>
           <button id="stop" onclick="onStop()">Stop</button>
           <button id="reset" onclick="onReset()">Reset</button>
+          <p id="game_container" style="display: none;">
+            <br/>
+            <button id="start_game" onclick="onStartGame()">Start Game</button>
+            &nbsp;
+            <span id="game_ready" style="font-weight:bold;color:red;display:none;">Ready?</span>
+            <span id="game_go" style="font-weight:bold;color:green;display:none;">GO!</span>
+          </p>
         </div>
         <div id="instructions">
           <h5>INSTRUCTIONS</h5>
@@ -34,6 +41,7 @@
               <li>Mimic each emoji being displayed to score a point!</li>
               <li>Press <strong>Stop</strong> to end the detector.</li>
               <li>Watch the tracking results and log messages for more information.</li>
+              <li>Press <strong>Start Game</strong> to start game</li>
             </ul>
           </p>
         </div>

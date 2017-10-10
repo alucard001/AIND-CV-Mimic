@@ -8,6 +8,12 @@ var divRoot = $("#camera")[0];  // div node where we want to add these elements
 var width = 640, height = 480;  // camera image size
 var faceMode = affdex.FaceDetectorMode.LARGE_FACES;  // face mode parameter
 
+// Custom vars
+var targetEmoji = '';
+var isGameStarted = false;
+var global_correct = 0, global_total = 0;
+var gameProcess = 0;
+
 // Initialize an Affectiva CameraDetector object
 var detector = new affdex.CameraDetector(divRoot, width, height, faceMode);
 
@@ -62,6 +68,8 @@ function onStop() {
     detector.removeEventListener();
     detector.stop();  // stop detector
   }
+
+  stopGame();
 };
 
 // Reset button
@@ -74,7 +82,13 @@ function onReset() {
   $("#logs").html("");  // clear out previous log
 
   // TODO(optional): You can restart the game as well
-  // <your code here>
+  stopGame();
+  global_correct = 0; global_total = 0;
+  setScore(global_correct, global_total);
+  $("#game_ready").hide();
+  $("#game_go").hide();
+  $("#game_container").hide();
+  $("#target").html("?");
 };
 
 // Add a callback to notify when camera access is allowed
@@ -102,7 +116,6 @@ detector.addEventListener("onInitializeSuccess", function() {
   $("#face_video").css("display", "none");
 
   // TODO(optional): Call a function to initialize the game, if needed
-  // <your code here>
 });
 
 // Add a callback to receive the results from processing an image
@@ -133,7 +146,19 @@ detector.addEventListener("onImageResultsSuccess", function(faces, image, timest
     drawEmoji(canvas, image, faces[0]);
 
     // TODO: Call your function to run the game (define it first!)
-    // <your code here>
+    if($("#game_container:hidden").length > 0){
+      $("#game_container").show();
+    }
+
+    if(isGameStarted){
+      if(toUnicode(faces[0].emojis.dominantEmoji) == targetEmoji){
+        global_correct += 1;
+        global_total += 1;
+        setScore(global_correct, global_total);
+        initEmoji();
+        return;
+      }
+    }
   }
 });
 
@@ -207,5 +232,38 @@ function drawEmoji(canvas, img, face) {
 // Optional:
 // - Define an initialization/reset function, and call it from the "onInitializeSuccess" event handler above
 // - Define a game reset function (same as init?), and call it from the onReset() function above
+function onStartGame(){
+  // initEmoji();
+  // setScore(global_correct, global_total);
 
-// <your code here>
+  isGameStarted = true;
+  $("#game_ready").show();
+  startGame();
+}
+
+function initEmoji(){
+  let selEmoji = Math.floor(Math.random()*emojis.length);
+  targetEmoji = emojis[selEmoji];
+  setTargetEmoji(targetEmoji);
+}
+
+function startGame(){
+  if(gameProcess == 0){
+    gameProcess = setInterval(function(){
+      initEmoji();
+
+      global_total += 1;
+      setScore(global_correct, global_total);
+
+      $("#game_ready").hide();
+      $("#game_go").show();
+
+    }, 3000);
+  }
+}
+
+function stopGame(){
+  isGameStarted = false;
+  clearInterval(gameProcess);
+  gameProcess = 0;
+}
