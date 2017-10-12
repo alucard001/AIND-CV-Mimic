@@ -201,7 +201,7 @@ function drawEmoji(canvas, img, face) {
   // TODO: Draw it using ctx.strokeText() or fillText()
   // See: https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/fillText
   // TIP: Pick a particular feature point as an anchor so that the emoji sticks to your face
-  var anchor_x = 0, anchor_y = 0;
+  var anchor_x = 0, anchor_y = 99999;
 
   for(var id in face.featurePoints){
     if(anchor_x > 0){
